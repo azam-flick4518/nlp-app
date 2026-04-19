@@ -1,27 +1,40 @@
 import streamlit as st
 import requests
 
-st.title("🧠 Sentiment Analyzer")
-st.write("Enter text below to classify its sentiment.")
+st.title("🧠 Zero-Shot Classifier")
+st.write("Classify text into any categories you define — powered by Llama 3.2 via Ollama.")
 
 text_input = st.text_area("Your text", placeholder="Type something here...")
+labels_input = st.text_input(
+    "Labels (comma-separated)",
+    placeholder="positive, negative, neutral",
+    value="positive, negative, neutral"
+)
 
-if st.button("Analyze"):
-    if not text_input.strip():
-        st.warning("Please enter some text first.")
+if st.button("Classify"):
+    if not text_input.strip() or not labels_input.strip():
+        st.warning("Fill in both fields.")
     else:
-        try:
-            response = requests.post(
-                "http://127.0.0.1:8000/classify",
-                json={"text": text_input}
-            )
-            result = response.json()
-            label = result["label"]
-            score = result["score"]
+        labels = [l.strip() for l in labels_input.split(",")]
 
-            color = "green" if label == "POSITIVE" else "red"
-            st.markdown(f"**Result:** :{color}[{label}]")
-            st.markdown(f"**Confidence:** {score:.2%}")
+        with st.spinner("Classifying..."):
+            try:
+                response = requests.post(
+                    "http://127.0.0.1:8000/classify",
+                    json={"text": text_input, "labels": labels},
+                    timeout=30  # Ollama can be slow on CPU
+                )
+                data = response.json()
+                result = data["result"]
 
-        except requests.exceptions.ConnectionError:
-            st.error("FastAPI server not running. Start it with: uvicorn main:app --reload")
+                st.subheader("Result")
+                st.markdown(f"**Label:** `{result['label']}`")
+                st.markdown(f"**Confidence:** {result['confidence']:.0%}")
+                st.markdown(f"**Reasoning:** {result['reasoning']}")
+
+            except requests.exceptions.ConnectionError:
+                st.error("FastAPI server not running. Start: uvicorn main:app --reload")
+            except requests.exceptions.Timeout:
+                st.error("Ollama took too long. Make sure Ollama is running: ollama serve")
+            except Exception as e:
+                st.error(f"Unexpected error: {e}")
