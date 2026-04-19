@@ -4,7 +4,7 @@ from transformers import pipeline
 
 app = FastAPI()
 
-# Force CPU — your MX450 VRAM is too small for reliable GPU inference
+# Force CPU — as VRAM is too small for reliable GPU inference
 classifier = pipeline(
     "sentiment-analysis",
     model="distilbert/distilbert-base-uncased-finetuned-sst-2-english",
