@@ -10,7 +10,7 @@ A simple AI-powered web app that classifies text sentiment using a pre-trained H
 - **PyTorch** — model inference engine
 
 ## Project Structure
-
+```text
 nlp-app/
 ├── main.py       # FastAPI backend
 ├── app.py        # Streamlit frontend
