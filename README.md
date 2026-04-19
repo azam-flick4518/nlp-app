@@ -16,6 +16,7 @@ nlp-app/
 ├── app.py        # Streamlit frontend
 ├── README.md
 └── .venv/        # virtual environment (not committed)
+```
 
 ## Setup
 
