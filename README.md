@@ -83,10 +83,10 @@ nlp-app/
 - `llama3.2:3b` pulled: `ollama pull llama3.2:3b`
 
 ### 1. Activate virtual environment
-.venv\Scripts\activate
+```.venv\Scripts\activate```
 
 ### 2. Install dependencies
-pip install -r requirements.txt
+```pip install -r requirements.txt```
 
 ### 3. Start Ollama (Terminal 1)
 ollama serve
